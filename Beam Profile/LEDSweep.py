@@ -15,77 +15,87 @@ filename = wavelength + '_' + product_code + r'_sweeps'+str(noofsweeps)+ '_boxca
 print("")
 print("The filename is %s" % filename)
 print("")
+LEDAngles = np.array
 
-dir = '1'
-reset ='3'
-ser = serial.Serial("COM4", 9600, timeout = 5)
-time.sleep(3)
-ser.write(str.encode(reset))
-try:
-    line = ser.readline()
+for difAngle in range (0, 3):
+    LEDAngle = int(input("Please Enter Angle of LED:"))
+    dir = '1'
+    reset ='3'
+    ser = serial.Serial("COM4", 9600, timeout = 5)
+    time.sleep(3)
 
-    data = np.zeros([2*noofsweeps, 399])
-    for j in range (0, 2*noofsweeps):
-        ser.write(str.encode(dir))
-        time.sleep(3)
-
+#for j in range (0, 3):
+    
+    
+    LEDAngle = int(input("Please Enter Angle of LED:"))
+    ser.write(str.encode(reset))
+    try:
         line = ser.readline()
-       # print(line)
 
-        for i in range (0,399):
+        data = np.zeros([2*noofsweeps, 399])
+        for j in range (0, 2*noofsweeps):
+            ser.write(str.encode(dir))
+            time.sleep(3)
+            
             line = ser.readline()
-          #  print(line)
-            data[j, i] = float(line)
-   
-        if ((j%2)==0):
-            data[j] = np.flip(data[j])
-
-        if(dir == '1'):
-            dir = '2'
-        elif(dir=='2'):
-            dir='1'
+            # print(line)
+            
+            for i in range (0,399):
+                line = ser.readline()
+                #  print(line)
+                data[j, i] = float(line)
+                
+                if ((j%2)==0):
+                    data[j] = np.flip(data[j])
+                    
+                    if(dir == '1'):
+                        dir = '2'
+                    elif(dir=='2'):
+                        dir='1'
+                            
+    finally:
+        ser.close()    
     
-finally:
-    ser.close()    
+    data = np.transpose(data)
+    angle = np.arange(-89.55, 90, 0.45)   
+    export = pd.DataFrame()
+    export['Angle'] = angle
     
-data = np.transpose(data)
-angle = np.arange(-89.55, 90, 0.45)   
-export = pd.DataFrame()
-export['Angle'] = angle
+    fig, (ax1, ax2) = plt.subplots(1,2)
+    ax1.plot(angle, data)
+    ax1.set_title('Different Sweeps')
+    ax1.set_xlabel('Angle (degrees)')
+    ax1.grid()
+    
+    avg = np.mean(data, axis = 1)
+    ax2.plot(angle, avg)
+    ax2.set_title("Average of Sweeps")
+    ax2.set_xlabel ("Angle (degrees)")
+    ax2.grid()
+    plt.show()
+    
+    
+    df= pd.DataFrame(avg)
+    filt = df.rolling(boxcar, min_periods=1).mean()
+    background = filt.min()
+    shifted = (filt-background)
+    peak = shifted.max()
+    normalised = (shifted/peak)
+    fig, fig2 = plt.subplots()
+    fig2.plot(angle, normalised)
+    fig2.set_title("LED Response Normalised")
+    fig2.set_xlabel("Angle (degrees)")
+    fig2.grid()
+    plt.show()
+    
+#export['Response (normalised)'+difAngle] = normalised
 
-fig, (ax1, ax2) = plt.subplots(1,2)
-ax1.plot(angle, data)
-ax1.set_title('Different Sweeps')
-ax1.set_xlabel('Angle (degrees)')
-ax1.grid()
-
-avg = np.mean(data, axis = 1)
-ax2.plot(angle, avg)
-ax2.set_title("Average of Sweeps")
-ax2.set_xlabel ("Angle (degrees)")
-ax2.grid()
-plt.show()
 
 
-df= pd.DataFrame(avg)
-filt = df.rolling(boxcar, min_periods=1).mean()
-background = filt.min()
-shifted = (filt-background)
-peak = shifted.max()
-normalised = (shifted/peak)
+#export_excel = export.to_excel (filename, index = False, header=True) #Don't forget to add '.xlsx' at the end of the path
 
-export['Response (normalised)'] = normalised
-
-fig, fig2 = plt.subplots()
-fig2.plot(angle, normalised)
-fig2.set_title("LED Response Normalised")
-fig2.set_xlabel("Angle (degrees)")
-fig2.grid()
-plt.show()
-
-export_excel = export.to_excel (filename, index = False, header=True) #Don't forget to add '.xlsx' at the end of the path
-
-normalised = np.array(normalised[0])
+    normalised[difAngle] = np.array(normalised[0])  
+    LEDAngles[difAngle] = LEDAngle
 
 bound_gauss = [[.1 , [1 , 1] , [0 ,90] , [0 , 90]] , [.2 ,[0,.2] , [0 , 90] , [0 , 90]] , [.2, [0 , 0.2] , [0 ,90] , [0 , 90]] , [.2, [0 , 0.2] , [0 ,90] , [0 , 90]]]
 
