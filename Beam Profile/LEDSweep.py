@@ -99,22 +99,22 @@ for difAngle in range (0, 3):
 
 bound_gauss = [[.1 , [1 , 1] , [0 ,90] , [0 , 90]] , [.2 ,[0,.2] , [0 , 90] , [0 , 90]] , [.2, [0 , 0.2] , [0 ,90] , [0 , 90]] , [.2, [0 , 0.2] , [0 ,90] , [0 , 90]]]
 
-Power_g , Error_g , Param_g = Gaussian_Power_Model.model_fit(angle , normalised , .02 , bound_gauss)
-Gaussian_Power_Model.model_plot(Param_g , angle , normalised)
+Power_g , Error_g , Param_g = Gaussian_Power_Model.model_fit(angle , normalised[0] , .02 , bound_gauss)
+Gaussian_Power_Model.model_plot(Param_g , angle , normalised[0])
 
 bound_cos = [[.1 , [1 , 1] , [0 ,0] , [0 , 10]] , [.1,[0,.2] , [45 , 90] , [0 , 200]] , [.1, [0 , 0.2] , [0 ,45] , [0 , 200]] , [.1,[0 , 0.2] , [0 ,90] , [0 , 200]]]
 
-Power_c , Error_c , Param_c = Cosine_Power_Model.model_fit(angle , normalised , .02 , bound_cos)
-Cosine_Power_Model.model_plot(Param_c , angle , normalised)
+Power_c , Error_c , Param_c = Cosine_Power_Model.model_fit(angle , normalised[0] , .02 , bound_cos)
+Cosine_Power_Model.model_plot(Param_c , angle , normalised[0])
 
-Param , model , RMSE = Gaussian_Power_Model.model_choice(Param_c , Power_c , Param_g , Power_g , normalised)
+Param , model , RMSE = Gaussian_Power_Model.model_choice(Param_c , Power_c , Param_g , Power_g , normalised[0])
 
 print("The optimal RMSE is %1.3f%%" % (RMSE*100)) 
 add_model = str(input("Do you want to add this model to the Database (y/n) :")).replace(" ","")
 check = False
 while check == False :
     if add_model.lower() == "y" :
-        Database_Update.write_to_database(product_code , wavelength , model , Param , RMSE , normalised.tolist())
+        Database_Update.write_to_database(product_code , wavelength , model , Param , RMSE , normalised[0].tolist())
         check = True
     elif add_model.lower() == "n" :
         check = True
