@@ -4,14 +4,14 @@ import time
 from sqlalchemy import create_engine
 
 
-def write_to_database(product_code , wavelength 
+def write_to_database_diode(product_code 
                       , input_angle_1 , Params1 , RMSE1 , Power1
                       , input_angle_2 , Params2 , RMSE2 , Power2
                       , input_angle_3 , Params3 , RMSE3 , Power3
                       , input_angle_4 , Params4 , RMSE4 , Power4
                       , model1, model2, model3, model4
                       ) :
-    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
+    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/Photodiode")
     Date , Time = date_time()
 
     param1_1 = [item[0] for item in Params1]
@@ -35,7 +35,7 @@ def write_to_database(product_code , wavelength
         param4_2 = [item[3] for item in Params2]
         param4_3 = [item[3] for item in Params3]
         param4_4 = [item[3] for item in Params4]
-        table = [(Date) , (Time) , (product_code) , (wavelength) 
+        table = [(Date) , (Time) , (product_code) 
         , (input_angle_1) , (RMSE1) , (param1_1) , (param2_1) , (param3_1) , (param4_1) , (Power1)
         , (input_angle_2) , (RMSE2) , (param1_2) , (param2_2) , (param3_2) , (param4_2) , (Power2)
         , (input_angle_3) , (RMSE3) , (param1_3) , (param2_3) , (param3_3) , (param4_3) , (Power3)
@@ -44,14 +44,14 @@ def write_to_database(product_code , wavelength
         ]
     except :
         #table = [(Date) , (Time) , (product_code) , (wavelength) , (model) , (RMSE) , (param1) , (param2) , (param3) , ([]) , (Power)]
-        table = [(Date) , (Time) , (product_code) , (wavelength) 
+        table = [(Date) , (Time) , (product_code)  
         , (input_angle_1) , (RMSE1) , (param1_1) , (param2_1) , (param3_1) , ([]) , (Power1)
         , (input_angle_2) , (RMSE2) , (param1_2) , (param2_2) , (param3_2) , ([]) , (Power2)
         , (input_angle_3) , (RMSE3) , (param1_3) , (param2_3) , (param3_3) , ([]) , (Power3)
         , (input_angle_4) , (RMSE4) , (param1_4) , (param2_4) , (param3_4) , ([]) , (Power4)
         , (model1) , (model2) , (model3) , (model4)
         ]
-    df1 = pd.DataFrame([table], columns=["date" , "time" , "product_code" , "wavelength" 
+    df1 = pd.DataFrame([table], columns=["date" , "time" , "product_code" 
                                          ,"input_angle_1" ,"rmse_angle_1", "param1_angle_1" , "param2_angle_1" , "param3_angle_1" , "param4_angle_1" , "normalized_power_angle_1"
                                          ,"input_angle_2" ,"rmse_angle_2", "param1_angle_2" , "param2_angle_2" , "param3_angle_2" , "param4_angle_2" , "normalized_power_angle_2"
                                          ,"input_angle_3" ,"rmse_angle_3", "param1_angle_3" , "param2_angle_3" , "param3_angle_3" , "param4_angle_3" , "normalized_power_angle_3"
@@ -59,13 +59,13 @@ def write_to_database(product_code , wavelength
                                          , "model_angle_1" , "model_angle_2" , "model_angle_3" , "model_angle_4" ])
 
 
-    df1.to_sql('led_data' , con = engine , if_exists = "append" , index = False)
-    df = pd.read_sql_query('select * from "led_data"' , con = engine)
+    df1.to_sql('photodiode_data' , con = engine , if_exists = "append" , index = False)
+    df = pd.read_sql_query('select * from "photodiode_data"' , con = engine)
 
     index = []
     count = 0
-    for item in df.duplicated(["product_code" , "wavelength"]):
-        if [df.loc[count][2],df.loc[count][3] ] == [product_code , wavelength] :
+    for item in df.duplicated(["product_code"]):
+        if [df.loc[count][2],df.loc[count][3] ] == [product_code] :
                 index.append(count)
         count += 1
 
@@ -87,7 +87,7 @@ def write_to_database(product_code , wavelength
                 check = False
 
 
-    df.to_sql('led_data' , con = engine , if_exists = "replace" , index = False)
+    df.to_sql('photodiode_data' , con = engine , if_exists = "replace" , index = False)
     
     return df
 
@@ -105,10 +105,10 @@ def Table_Search():
     wavelength = str(input("Enter Manufacturer Wavelength in nm :")).replace(" ", "")+"nm"
     product_code = str(input("Enter Full Product Code :")).replace(" ", "")
     
-    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
+    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/Photodiode")
     
-    df = pd.read_sql_query('select * from "led_data"' , con = engine)
-    df1 = df.loc[(df["wavelength"] == wavelength) & (df["product_code"] == product_code)] 
+    df = pd.read_sql_query('select * from "photodiode_data"' , con = engine)
+    df1 = df.loc[(df["product_code"] == product_code)] 
     
     return df1
 
@@ -131,9 +131,9 @@ def row_delete() :
     
     index = int(input("Select Column You Wish to delete :"))
     
-    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
-    df = pd.read_sql_query('select * from "led_data"' , con = engine)
+    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/Photodiode")
+    df = pd.read_sql_query('select * from "photodiode_data"' , con = engine)
     
     df = df.drop(index).reset_index(drop = True)
     
-    df.to_sql('led_data' , con = engine , if_exists = "replace" , index = False)
+    df.to_sql('photodiode_data' , con = engine , if_exists = "replace" , index = False)
