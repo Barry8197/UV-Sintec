@@ -4,25 +4,63 @@ import time
 from sqlalchemy import create_engine
 
 
-def write_to_database(product_code , wavelength , model , Param , RMSE , Power) :
+def write_to_database(product_code , wavelength 
+                      , input_angle_1 , Params1 , RMSE1 , Power1
+                      , input_angle_2 , Params2 , RMSE2 , Power2
+                      , input_angle_3 , Params3 , RMSE3 , Power3
+                      , input_angle_4 , Params4 , RMSE4 , Power4
+                      , model1, model2, model3, model4
+                      ) :
     engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
     Date , Time = date_time()
 
-    param1 = [item[0] for item in Param]
-    param2 = [item[1] for item in Param]
-    param3 = [item[2] for item in Param]
+    param1_1 = [item[0] for item in Params1]
+    param2_1 = [item[1] for item in Params1]
+    param3_1 = [item[2] for item in Params1]
+    
+    param1_2 = [item[0] for item in Params2]
+    param2_2 = [item[1] for item in Params2]
+    param3_2 = [item[2] for item in Params2]
+    
+    param1_3 = [item[0] for item in Params3]
+    param2_3 = [item[1] for item in Params3]
+    param3_3 = [item[2] for item in Params3]
+    
+    param1_4 = [item[0] for item in Params4]
+    param2_4 = [item[1] for item in Params4]
+    param3_4 = [item[2] for item in Params4]
+    
     try :
-        param4 = [item[3] for item in Param]
-        table = [(Date) , (Time) , (product_code) , (wavelength) , (model) , (RMSE) , (param1) , (param2) , (param3) , (param4) , (Power)]
+        param4_1 = [item[3] for item in Params1]
+        param4_2 = [item[3] for item in Params2]
+        param4_3 = [item[3] for item in Params3]
+        param4_4 = [item[3] for item in Params4]
+        table = [(Date) , (Time) , (product_code) , (wavelength) 
+        , (input_angle_1) , (RMSE1) , (param1_1) , (param2_1) , (param3_1) , (param4_1) , (Power1)
+        , (input_angle_2) , (RMSE2) , (param1_2) , (param2_2) , (param3_2) , (param4_2) , (Power2)
+        , (input_angle_3) , (RMSE3) , (param1_3) , (param2_3) , (param3_3) , (param4_3) , (Power3)
+        , (input_angle_4) , (RMSE4) , (param1_4) , (param2_4) , (param3_4) , (param4_4) , (Power4)
+        , (model1) , (model2) , (model3) , (model4)
+        ]
     except :
-        table = [(Date) , (Time) , (product_code) , (wavelength) , (model) , (RMSE) , (param1) , (param2) , (param3) , ([]) , (Power)]
+        #table = [(Date) , (Time) , (product_code) , (wavelength) , (model) , (RMSE) , (param1) , (param2) , (param3) , ([]) , (Power)]
+        table = [(Date) , (Time) , (product_code) , (wavelength) 
+        , (input_angle_1) , (RMSE1) , (param1_1) , (param2_1) , (param3_1) , ([]) , (Power1)
+        , (input_angle_2) , (RMSE2) , (param1_2) , (param2_2) , (param3_2) , ([]) , (Power2)
+        , (input_angle_3) , (RMSE3) , (param1_3) , (param2_3) , (param3_3) , ([]) , (Power3)
+        , (input_angle_4) , (RMSE4) , (param1_4) , (param2_4) , (param3_4) , ([]) , (Power4)
+        , (model1) , (model2) , (model3) , (model4)
+        ]
+    df1 = pd.DataFrame([table], columns=["date" , "time" , "product_code" , "wavelength" 
+                                         ,"input_angle_1" ,"rmse_angle_1", "param1_angle_1" , "param2_angle_1" , "param3_angle_1" , "param4_angle_1" , "normalized_power_angle_1"
+                                         ,"input_angle_2" ,"rmse_angle_2", "param1_angle_2" , "param2_angle_2" , "param3_angle_2" , "param4_angle_2" , "normalized_power_angle_2"
+                                         ,"input_angle_3" ,"rmse_angle_3", "param1_angle_3" , "param2_angle_3" , "param3_angle_3" , "param4_angle_3" , "normalized_power_angle_3"
+                                         ,"input_angle_4" ,"rmse_angle_4", "param1_angle_4" , "param2_angle_4" , "param3_angle_4" , "param4_angle_4" , "normalized_power_angle_4"
+                                         , "model_angle_1" , "model_angle_2" , "model_angle_3" , "model_angle_4" ])
 
-    df1 = pd.DataFrame([table], columns=["date" , "time" , "product_code" , "wavelength" , "model"  , "rmse"
-                                         , "param1" , "param2" , "param3" , "param4" , "normalized_power"])
 
-
-    df1.to_sql('test_led' , con = engine , if_exists = "append" , index = False)
-    df = pd.read_sql_query('select * from "test_led"' , con = engine)
+    df1.to_sql('led_data' , con = engine , if_exists = "append" , index = False)
+    df = pd.read_sql_query('select * from "led_data"' , con = engine)
 
     index = []
     count = 0
@@ -49,7 +87,7 @@ def write_to_database(product_code , wavelength , model , Param , RMSE , Power) 
                 check = False
 
 
-    df.to_sql('test_led' , con = engine , if_exists = "replace" , index = False)
+    df.to_sql('led_data' , con = engine , if_exists = "replace" , index = False)
     
     return df
 
@@ -69,7 +107,7 @@ def Table_Search():
     
     engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
     
-    df = pd.read_sql_query('select * from "test_led"' , con = engine)
+    df = pd.read_sql_query('select * from "led_data"' , con = engine)
     df1 = df.loc[(df["wavelength"] == wavelength) & (df["product_code"] == product_code)] 
     
     return df1
@@ -94,8 +132,8 @@ def row_delete() :
     index = int(input("Select Column You Wish to delete :"))
     
     engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
-    df = pd.read_sql_query('select * from "test_led"' , con = engine)
+    df = pd.read_sql_query('select * from "led_data"' , con = engine)
     
     df = df.drop(index).reset_index(drop = True)
     
-    df.to_sql('test_led' , con = engine , if_exists = "replace" , index = False)
+    df.to_sql('led_data' , con = engine , if_exists = "replace" , index = False)
