@@ -5,17 +5,22 @@ import pandas as pd
 import numpy as np
 import Gaussian_Power_Model
 import Cosine_Power_Model
+import Database_Update
 
+wavelength = str(input("Enter Manufacturer Wavelength in nm :")).replace(" ", "")+"nm"
+product_code = str(input("Enter Full Product Code:")).replace(" ", "")
+noofsweeps = int(input("Enter Number of Sweeps Completed in integers:"))
+boxcar = int(input("Please Enter Boxcar Value :"))
+filename = wavelength + '_' + product_code + r'_sweeps'+str(noofsweeps)+ '_boxcar'+ str(boxcar)+'_.xlsx'
+print("")
+print("The filename is %s" % filename)
+print("")
 
-
-filename = r'LED'
-noofsweeps = 5
-boxcar = 6
-filename = r'680nm_1125-1084-ND_sweeps'+str(noofsweeps)+ '_boxcar'+ str(boxcar)+'_.xlsx'
 dir = '1'
-
-ser = serial.Serial("COM10", 9600, timeout = 5)
-
+reset ='3'
+ser = serial.Serial("COM4", 9600, timeout = 5)
+time.sleep(3)
+ser.write(str.encode(reset))
 try:
     line = ser.readline()
 
@@ -52,12 +57,14 @@ fig, (ax1, ax2) = plt.subplots(1,2)
 ax1.plot(angle, data)
 ax1.set_title('Different Sweeps')
 ax1.set_xlabel('Angle (degrees)')
-
+ax1.grid()
 
 avg = np.mean(data, axis = 1)
 ax2.plot(angle, avg)
 ax2.set_title("Average of Sweeps")
 ax2.set_xlabel ("Angle (degrees)")
+ax2.grid()
+plt.show()
 
 
 df= pd.DataFrame(avg)
@@ -73,21 +80,38 @@ fig, fig2 = plt.subplots()
 fig2.plot(angle, normalised)
 fig2.set_title("LED Response Normalised")
 fig2.set_xlabel("Angle (degrees)")
+fig2.grid()
+plt.show()
 
 export_excel = export.to_excel (filename, index = False, header=True) #Don't forget to add '.xlsx' at the end of the path
 
-bound_gauss = [[.1 , [0 , 1] , [0 ,90] , [0 , 90]] , [.2 ,[0,.2] , [0 , 90] , [0 , 90]] , [.2, [0 , 0.2] , [0 ,90] , [0 , 90]] ]
+normalised = np.array(normalised[0])
 
-Power_g , Error_g , Param_g = Gaussian_Power_Model.model_fit(angle , normalized , .02 , bound_gauss)
-Gaussian_Power_Model.model_plot(Param_g , x_axis , y_axis)
+bound_gauss = [[.1 , [1 , 1] , [0 ,90] , [0 , 90]] , [.2 ,[0,.2] , [0 , 90] , [0 , 90]] , [.2, [0 , 0.2] , [0 ,90] , [0 , 90]] , [.2, [0 , 0.2] , [0 ,90] , [0 , 90]]]
 
-bound_cos = [[.01 , [0 , 1] , [0 ,0] , [0 , 10]] , [.05,[0,.2] , [45 , 90] , [0 , 200]] , [.05, [0 , 0.2] , [0 ,45] , [0 , 200]] , [.015,[0 , 0.2] , [0 ,90] , [0 , 200]]]
+Power_g , Error_g , Param_g = Gaussian_Power_Model.model_fit(angle , normalised , .02 , bound_gauss)
+Gaussian_Power_Model.model_plot(Param_g , angle , normalised)
 
-Power_c , Error_c , Param_c = Cosine_Power_Model.model_fit(angle , normalized , .02 , bound_cos)
-Cosine_Power_Model.model_plot(Param_c , x_axis , y_axis)
+bound_cos = [[.1 , [1 , 1] , [0 ,0] , [0 , 10]] , [.1,[0,.2] , [45 , 90] , [0 , 200]] , [.1, [0 , 0.2] , [0 ,45] , [0 , 200]] , [.1,[0 , 0.2] , [0 ,90] , [0 , 200]]]
 
-Param , model = Gaussian_Power_Model.model_choice(Param_c , Power_c , Param_g , Power_g , y_axis)
+Power_c , Error_c , Param_c = Cosine_Power_Model.model_fit(angle , normalised , .02 , bound_cos)
+Cosine_Power_Model.model_plot(Param_c , angle , normalised)
 
+Param , model , RMSE = Gaussian_Power_Model.model_choice(Param_c , Power_c , Param_g , Power_g , normalised)
+
+print("The optimal RMSE is %1.3f%%" % (RMSE*100)) 
+add_model = str(input("Do you want to add this model to the Database (y/n) :")).replace(" ","")
+check = False
+while check == False :
+    if add_model.lower() == "y" :
+        Database_Update.write_to_database(product_code , wavelength , model , Param , RMSE , normalised.tolist())
+        check = True
+    elif add_model.lower() == "n" :
+        check = True
+    else :
+        print("")
+        print("Error please select y/n")
+        check = False
 
 
 
