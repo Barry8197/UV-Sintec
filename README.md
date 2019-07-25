@@ -2,7 +2,7 @@
 
 ## Sintec - Database 
 
-Contains the files required to build a Database in Postgresql for the Beam Profile of an LED.  Consists of three main python modules called "Table_Create.py" , "Database_Update.py" and "LEDSweep.py". These files are discussed to a greater extent in the README file in Sintec - Database.
+Contains the files required to build a Database in Postgresql for the Beam Profile of an LED.  Consists of three main python modules called "Table_Create.py" , "Database_Update.py" and "LEDSweep.py". These files are discussed to a greater extent in the README.md file in Sintec - Database.
 
 This folder also contains the python modules "Cosine_Power_Model.py" and "Gaussian_Power_Model.py". These files are imported into the "LEDSweep.py" and are included this folder to simplify the importing of the modules. They are discussed to a greater extent in the Sintec - Model folder.
 
@@ -16,4 +16,4 @@ Contains 2 ".csv" files which are two data files containing beam profiles found 
 
 Contains 2 ".py" files called "Cosine_Power_Model.py" and "Gaussian_Power_Model.py". These files are converted python modules from the jupyter notebook files "Cosine_Power_Model.ipynb" and Gaussian_Power_Model.ipynb" respectively. 
 
-All other files are Jupyter Notebooks of the form ".ipynb". These files cannot be viewed on Github and must be downloaded and opened using Jupyter Notebook. These files are discussed to a greter extent in the README file in Sintec - Model
+All other files are Jupyter Notebooks of the form ".ipynb". These files cannot be viewed on Github and must be downloaded and opened using Jupyter Notebook. These files are discussed to a greter extent in the README.md file in Sintec - Model
