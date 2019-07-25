@@ -37,5 +37,19 @@ The functions contained are :
 
 ### LEDSweep.py
 
-Executing this module 
+Executing this module runs the beam profiling protocol.  
+
+This module requests the wavelength, product code , number of sweeps and width of averaging boxcar as inputs. 
+
+An LED is rotated by the specified number of sweeps and its beam profile is found by averaging the profile produced. 
+
+This beam profile is then modelled using both the Cosine and Gaussian Power Models and the modelling parameters are returned. 
+
+The Root Mean Square Error is outputted and the user is given the choice whether to accept or reject the accuracy of the model. 
+
+If the user chooses to accept, the product code and wavelength are checked against previous entries in the LED_Data database for similar LED's. 
+
+If similar LED's are found the user has the option to update the most previous LED Beam Profile or to append this new profile. 
+
+The LED wavelength, product code, model parameters, normalised power profile as well as a time stamp are then stored in the database. 
 
