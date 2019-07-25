@@ -4,6 +4,8 @@
 
 Contains the files required to build a Database in Postgresql for the Beam Profile of an LED.  Consists of three main python modules called "Table_Create.py" , "Database_Update.py" and "LEDSweep.py".
 
+This folder also contains the python modules "Cosine_Power_Model.py" and "Gaussian_Power_Model.py". These files are imported into the "LEDSweep.py" and are included this folder to simplify the importing of the modules. They are discussed to a greater extent below under the Sintec-Model heading.
+
 ### Table_Create.py
 
 When executed this module will create a Table called "LED_Data" in the LED database for the postgres user. If the table already exists no new table will be created and the original table will not be affected. 
@@ -54,4 +56,7 @@ If the user chooses to accept, the product code and wavelength are checked again
 If similar LED's are found the user has the option to update the Beam Profile of the most recent entry or to append this new profile. 
 
 The LED wavelength, product code, model parameters, normalised power profile as well as a time stamp are then stored in the database. 
+
+## Sintec - Model
+
 
