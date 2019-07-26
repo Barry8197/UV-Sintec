@@ -25,7 +25,8 @@ Contains functions used to both write to and navigate the "LED_Data" Database.
 The functions contained are :  
 - write_to_database() - writes the current data to the database in the correct format 
 - date_time() - a function used within write_to_database() to timestamp the date entry  
-- Table_Search() - a function which returns the relevant entries based on the search conditions of wavelength and product code in database form  
+- Database_View() - a function which outputs the entire database
+- Table_Search() - a function which returns the relevant entries based on the search conditions of wavelength and product code in database form 
 - data_extract() - takes the output from Table_Search() as an input and returns the data in the form of an array based on the column and row you wish to extract
 - row_delete() - deletes any unwanted rows
 
