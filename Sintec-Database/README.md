@@ -27,7 +27,7 @@ The functions contained are :
 - date_time() - a function used within write_to_database() to timestamp the date entry  
 - Database_Search() - a interactive function which searches the database based on an entire or incompltete product code and returns all matched found in the database
 - Data_Extract() - returns global variables corresponding to the columns of a selected row 
-- row_delete() - deletes any unwanted rows
+- Row_Delete() - deletes any unwanted rows
 
 ## LEDSweep.py
 
