@@ -2,7 +2,10 @@ import pandas as pd
 import datetime
 import time
 from sqlalchemy import create_engine
-
+import ipywidgets as widgets
+from ipywidgets import interactive
+from IPython.display import display
+import warnings
 
 def write_to_database(product_code , wavelength 
                       , input_angle_1 , Params1 , RMSE1 , Power1
@@ -100,40 +103,84 @@ def date_time():
     
     return date , time
 
+def Database_Search() :
+    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
+    
+    df = pd.read_sql_query('select * from "led_data"' , con = engine)
+    
+    items = ['All']+sorted(df['product_code'].unique().tolist())
 
-def Table_Search():
-    wavelength = str(input("Enter Manufacturer Wavelength in nm :")).replace(" ", "")+"nm"
+    def view(x=''):
+        x = x.replace(" " , "")
+        filtered = df["product_code"].str.contains(x)
+
+        if x =='': 
+            return display(df)
+
+        elif len(df[filtered]) > 0 : 
+            return display(df[filtered])
+
+        else :
+            return print("This product code does not match any LED's in the Database")
+
+    product_code = widgets.Text(
+        value='',
+        placeholder='Enter Product Code',
+        description='Input:',
+        disabled=False
+    )
+    
+    return interactive(view, x=product_code)
+
+def Data_Extract() :
+    product_code = str(input("Enter Full Product Code :")).replace(" ", "")
+
+    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
+
+    df = pd.read_sql_query('select * from "led_data"' , con = engine)
+    df1 = df.loc[(df["product_code"] == product_code)] 
+
+    if len(df1) > 0 :
+        display(df1)
+        row = int(input("Which Row do you wish to extract data from :"))
+
+        try :
+            warnings.filterwarnings("ignore")
+            df1[item][row] = pd.to_numeric(df1[item][row][1:-1].split(","))        
+        except :
+            pass
+
+        items_list = [df1.columns.values.tolist()] + df1.values.tolist()
+        print("The Data has been saved to variable 'items_list'")
+        print("The location of the data corresponds to the loaciton of the column heading ")
+        print("e.g. wavelength heading is item_list[0][3] and the wavelength value is item_list[1][3]")
+
+        for i in range(len(items_list[0])) :
+            print("%i. %s" %(i , items_list[0][i]))
+
+        return items_list
+
+    else :
+        return print("This product code does not match any LED's in the Database")
+    
+def Row_Delete() :
     product_code = str(input("Enter Full Product Code :")).replace(" ", "")
     
     engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
     
     df = pd.read_sql_query('select * from "led_data"' , con = engine)
-    df1 = df.loc[(df["wavelength"] == wavelength) & (df["product_code"] == product_code)] 
+    df1 = df.loc[(df["product_code"] == product_code)]
     
-    return df1
-
-def data_extract(df) :
-    row = int(input("Which Row do you wish to extract data from :"))
-    column = str(input("Which Column do you wish to extract data from :")).replace(" " , "")
-    data = []
-    try :
-        for item in df[column][row][1:-1].split(','):
-            data.append(float(item))
-    except :
-        print("This Column does not exist")
+    if len(df1) > 0 :
         
-    return data
+        display(df1)
+        index = int(input("Select the row you wish to delete :"))
 
-def row_delete() :
-    df = Table_Search()
-    
-    display(df)
-    
-    index = int(input("Select Column You Wish to delete :"))
-    
-    engine = create_engine("postgresql://postgres:uv-sintec@localhost:5432/LED")
-    df = pd.read_sql_query('select * from "led_data"' , con = engine)
-    
-    df = df.drop(index).reset_index(drop = True)
-    
-    df.to_sql('led_data' , con = engine , if_exists = "replace" , index = False)
+        if index in df1.index.values :
+            df = df.drop(index).reset_index(drop = True)
+
+            df.to_sql('led_data' , con = engine , if_exists = "replace" , index = False)
+        else :
+            return print("The row you selected does not correspond to the product code entered")
+    else :
+        return print("This product code does not match any LED's in the Database")        
