@@ -7,18 +7,18 @@ import pandas as pd
 import numpy as np
 import Gaussian_Power_Model
 import Cosine_Power_Model
-import Database_Update
+import Database_Update_Diode
 import centering
 
-wavelength = str(input("Enter Manufacturer Wavelength in nm :")).replace(" ", "")+"nm"
-product_code = str(input("Enter Full Product Code:")).replace(" ", "")
+#wavelength = str(input("Enter Manufacturer Wavelength in nm :")).replace(" ", "")+"nm"
+product_code = str(input("Enter Full Product Code of the photodiode:")).replace(" ", "")
 noofsweeps = int(input("Enter Number of Sweeps Completed in integers:"))
 boxcar = int(input("Please Enter Boxcar Value :"))
-filename = wavelength + '_' + product_code + r'_sweeps'+str(noofsweeps)+ '_boxcar'+ str(boxcar)+'_.xlsx'
+filename = product_code + r'_sweeps'+str(noofsweeps)+ '_boxcar'+ str(boxcar)+'_.xlsx'
 print("")
 print("The filename is %s" % filename)
 print("")
-LEDAngles = []
+DiodeAngles = []
 noofangles = 4
 normalised = pd.DataFrame()
 #LEDAngles = pd.DataFrame()
@@ -26,7 +26,7 @@ lengthIndex=400
 norm = pd.DataFrame()
 difAngle = 0
 for difAngle in range (0, noofangles):
-    LEDAngle = int(input("Please Enter Angle of LED:"))
+    DiodeAngle = int(input("Please Enter Angle of Photodiode:"))
     dir = '1'
     reset ='3'
     ser = serial.Serial("COM4", 9600, timeout = 5)
@@ -99,8 +99,7 @@ for difAngle in range (0, noofangles):
 
     #normalised = np.array(difAngle, newnormalised) 
     norm[difAngle] = newnormalised
-    #LEDAngles = LEDAngles.append(LEDAngle)
-    LEDAngles.append(LEDAngle)
+    DiodeAngles.append(DiodeAngle)
     
 X1 = np.zeros((noofangles+1,399))
 Y1 = np.zeros((noofangles+1,399))
@@ -109,8 +108,8 @@ norm = np.transpose(norm)
 
 
 for k in range (0, noofangles):
-    X1[k] = angle*np.cos(np.deg2rad(LEDAngles[k]))
-    Y1[k] = angle*np.sin(np.deg2rad(LEDAngles[k]))
+    X1[k] = angle*np.cos(np.deg2rad(DiodeAngles[k]))
+    Y1[k] = angle*np.sin(np.deg2rad(DiodeAngles[k]))
 
 X1[noofangles] = np.flip(X1[0])
 Y1[noofangles] = np.flip(Y1[0])
@@ -125,7 +124,7 @@ fig = plt.figure()
 ax = plt.axes(projection='3d')
 surf = ax.plot_surface(X1, Y1, Z1, cmap=cm.coolwarm,
                        linewidth=0, antialiased=False)
-ax.set_title('Nomalised 3D Beam Profile of an LED')
+ax.set_title('Nomalised 3D Response of a photodiode ('+ product_code +')')
 ax.set_xlabel('Angle in the x-direction')
 ax.set_ylabel('Angle in the y-direction')
 ax.set_zlabel('Normalised Beam Profile of the LED')
@@ -159,12 +158,13 @@ add_model = str(input("Do you want to add this model to the Database (y/n) :")).
 check = False
 while check == False :
     if add_model.lower() == "y" :
-        Database_Update.write_to_database(product_code , wavelength 
-                                          , LEDAngles[0] , Param_array[0] , RMSE_array[0] , norm[0].tolist()
-                                          , LEDAngles[1] , Param_array[1] , RMSE_array[1] , norm[1].tolist()
-                                          , LEDAngles[2] , Param_array[2] , RMSE_array[2] , norm[2].tolist()
-                                          , LEDAngles[3] , Param_array[3] , RMSE_array[3] , norm[3].tolist()
-                                          , model_array[0] , model_array[1] , model_array[2] , model_array[3])
+        Database_Update_Diode.write_to_database_diode(product_code 
+                                          , DiodeAngles[0] , Param_array[0] , RMSE_array[0] , norm[0].tolist()
+                                          , DiodeAngles[1] , Param_array[1] , RMSE_array[1] , norm[1].tolist()
+                                          , DiodeAngles[2] , Param_array[2] , RMSE_array[2] , norm[2].tolist()
+                                          , DiodeAngles[3] , Param_array[3] , RMSE_array[3] , norm[3].tolist()
+                                          , model_array[0] , model_array[1] , model_array[2] , model_array[3]
+                                          )
         check = True
     elif add_model.lower() == "n" :
         check = True
@@ -173,7 +173,7 @@ while check == False :
         print("Error please select y/n")
         check = False
         
-print (LEDAngles)
+print (DiodeAngles)
 
 
 
