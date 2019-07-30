@@ -12,7 +12,7 @@ def centerdata(originalDataArray, totalIndexLength):
     
     #funtion to find the maximum points in the array and display graph
     angle = np.arange(-89.55, 90, 0.45)
-    indexes = peakutils.indexes(originalDataArray, thres=0.8, min_dist=10)
+    indexes = peakutils.indexes(originalDataArray, thres=0.8, min_dist=40)
     print("Peak Indices/Index: ",indexes)
     pyplot.figure(figsize=(6,4))
     pplot(angle, originalDataArray, indexes)
