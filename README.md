@@ -28,3 +28,9 @@ Contains 1 ".ipynb" file which is given as an examplar of the operation of the "
 
 The Output folder is of importance as it contains 8 csv files containing results of calculations completed as part of the Automate_Working_Final.py file as well as a csv file containing a summary of the calculations. 
 
+## Spectral Line Shaping
+
+Contains a ".py" file whose funcitons are explained in the folder
+
+Contains a ".ipynb" file which models a weighted combination of a Lorentz and Gaussian functions to each ".txt" LED measurement file contained in the folder.
+
