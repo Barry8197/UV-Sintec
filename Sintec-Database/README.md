@@ -1,5 +1,8 @@
 ## Table_Create.py
 
+Executed by running -
+` %run Table_Create.py `
+
 When executed this module will create a Table called "LED_Data" in the LED database for the postgres user. If the table already exists no new table will be created and the original table will not be affected. 
 
 If you wish to delete the LED_Data table and restart the Database the simplest way is through the Postgresql command line.  
