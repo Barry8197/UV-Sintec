@@ -34,3 +34,17 @@ Contains a ".py" file whose funcitons are explained in the folder
 
 Contains a ".ipynb" file which models a weighted combination of a Lorentz and Gaussian functions to each ".txt" LED measurement file contained in the folder.
 
+## Genetic Algorithm Models
+
+Models the Beam profiles of LED's using a Genetic Algorthim as opposed to a regression model in Sintec - Model
+
+Contains 2 ".csv" files which are two data files containing beam profiles found online.
+
+"Nichia.csv" is the beam profile for the [NSPW345CS LED](https://www.alldatasheet.com/datasheet-pdf/pdf/240328/NICHIA/NSPW345CS.html?) from Nichia Corp.
+
+"CREE_LED4" is the beam profile for the [XLamp XR-E LED](https://www.cree.com/led-components/media/documents/XLamp7090XRE-16F.pdf) from Cree Corp. 
+
+Contains 2 ".py" files called "CPM_Genetic_Algorithm.py" and "Gauss_Genetic_Algorithm.py". These files are converted python modules from the jupyter notebook files "CPM_Genetic_Algorithm.ipynb" and Gauss_Genetic_Algorithm.ipynb" respectively. The two .ipynb files contain comment explanations of the code
+
+All other files are Jupyter Notebooks of the form ".ipynb". These files cannot be viewed on Github and must be downloaded and opened using Jupyter Notebook. These files are discussed to a greter extent in the README.md file in Sintec - Model
+
