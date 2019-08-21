@@ -40,12 +40,12 @@ void setup() {
  // Serial.println("2. Reset Board");
  // Serial.println();
  { Serial.begin(9600); 
-  for (int i = 2; i < 10; i++)   
+for (int i = 4; i < 11; i++)   
   {  
     pinMode(i, OUTPUT);  
   }  
-  pinMode(12, OUTPUT);  
-  pinMode(13, OUTPUT);  
+  pinMode(2, OUTPUT);  
+  pinMode(3, OUTPUT);   
 } 
 
  
@@ -64,7 +64,7 @@ float diffvoltage =voltage/10;
 int resistanceOUT = 5.3;
 
 int current = 1000*diffvoltage/resistanceOUT;
-Serial.println(current);
+//Serial.println(current);
     digit2 = current / 10;  
     //digit2 is for the tens place and will be an integer//
     digit1 = current - digit2*10 ; 
@@ -72,14 +72,14 @@ Serial.println(current);
 
 
  
-      digitalWrite(12, HIGH);  
-      digitalWrite(13, LOW);  
+      digitalWrite(2, HIGH);  
+      digitalWrite(3, LOW);  
       dis(digit2);  
      
    delay(10); 
    
-      digitalWrite(13, HIGH);  
-      digitalWrite(12, LOW);  
+      digitalWrite(3, HIGH);  
+      digitalWrite(2, LOW);  
       dis(digit1);
         
    delay(10); 
@@ -180,8 +180,8 @@ void returnHome()
 
 void dis(int num)   
 {  
-  for (int i = 2; i < 9; i++)   
+  for (int i = 4; i < 11; i++)   
   {  
-    digitalWrite(i, bitRead(digit[num], i - 2));  
+    digitalWrite(i, bitRead(digit[num], i - 4 ));  
   }  
 } 
