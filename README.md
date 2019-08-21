@@ -56,3 +56,11 @@ It then uses another Genetic Algorithm to optomize the addition of multiple Beam
 
 The algorithm uses a cartesian coordinate plane to place the LED Beam Profile Origin with a flat response achieved with the optimal solution having the LED's correctly spaced in the x-y plane at a certain distance away.
 
+## Beam Profile & Cosine Response
+
+Contains files need to extract the beam profile of an LED. such files include the Arduino code and python scripts used in orer to operate the apparatus correctly. The code should offer to write the results to the database and show the 3D model of the beam Profile
+
+The steps needed to get the beam profile are summarised in Instructions (Beam Profile) along with examples of how the beam profile should look.
+
+
+
