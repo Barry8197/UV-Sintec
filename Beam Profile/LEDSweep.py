@@ -29,7 +29,7 @@ for difAngle in range (0, noofangles):
     LEDAngle = int(input("Please Enter Angle of LED:"))
     dir = '1'
     reset ='3'
-    ser = serial.Serial("COM4", 9600, timeout = 5)
+    ser = serial.Serial("COM10", 9600, timeout = 5)
     time.sleep(3)
 
 
