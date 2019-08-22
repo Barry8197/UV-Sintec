@@ -62,5 +62,15 @@ Contains files need to extract the beam profile of an LED. such files include th
 
 The steps needed to get the beam profile are summarised in Instructions (Beam Profile) along with examples of how the beam profile should look.
 
+## Genetic Algorithm Spectral Model
 
+Contains 12 ".txt" files which correspond to the spectral content of 12 distinct LEDs
+
+Contains one ".csv" file which contains the spectral content of sunlight downloaded [online](https://www.pveducation.org/pvcdrom/appendices/standard-solar-spectra)
+
+Contains one ".jpeg" file which explains the method of crossover used for the genetic alogorithm
+
+Contains a ".py" file taken from Spectral Line Shaping folder and is a module which is used to model the spectral shape of LEDs
+
+Contains a ".ipynb" file which contains the Genetic Algorithm used to fit the weighted sum of LEDs to the solar spectrum
 
