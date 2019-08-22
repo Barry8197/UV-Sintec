@@ -48,3 +48,19 @@ Contains 2 ".py" files called "CPM_Genetic_Algorithm.py" and "Gauss_Genetic_Algo
 
 All other files are Jupyter Notebooks of the form ".ipynb". These files cannot be viewed on Github and must be downloaded and opened using Jupyter Notebook. These files are discussed to a greter extent in the README.md file in Sintec - Model
 
+## Beam_Profile_Genetic_Algorithm_Optimization
+
+Uses the above Genetic Algorithm Models to model the beam profile of the Nichia Corp LED Beam Profile.
+
+It then uses another Genetic Algorithm to optomize the addition of multiple Beam Profiles in the aim of optomizing the summation to have a flat response. 
+
+The algorithm uses a cartesian coordinate plane to place the LED Beam Profile Origin with a flat response achieved with the optimal solution having the LED's correctly spaced in the x-y plane at a certain distance away.
+
+## Beam Profile & Cosine Response
+
+Contains files need to extract the beam profile of an LED. such files include the Arduino code and python scripts used in orer to operate the apparatus correctly. The code should offer to write the results to the database and show the 3D model of the beam Profile
+
+The steps needed to get the beam profile are summarised in Instructions (Beam Profile) along with examples of how the beam profile should look.
+
+
+
